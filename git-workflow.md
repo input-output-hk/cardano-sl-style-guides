@@ -11,6 +11,13 @@
 branch.
 * Fixes from release branches are merged into master.
 
+## Branches
+
+* Branch name should fix the following template: `(type of task)/(maybe related issue number)(name)`.
+  * `bug/dae31-fix-tx-send`
+  * `feature/csl492-wallet-delegation-certs`
+  * `feature/launcher`
+
 ## Commits
 
 We follow [this guide](http://chris.beams.io/posts/git-commit/) how to write a
