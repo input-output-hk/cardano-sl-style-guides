@@ -8,12 +8,13 @@
   * They are reviewed and merged after that.
 * New tagged release (even minor one) is a new branch.
 * If there is a release then a `tag` is created from the commit of this release
-branch.
+  branch.
 * Fixes from release branches are merged into master.
 
 ## Branches
 
-* Branch name should fit the following template: `(type of task)/(maybe related issue number)(name)`.
+* Branch name should fit the following template: `(type of task)/(maybe related
+  issue number)(name)`.
   * `bugfix/dae31-fix-tx-send`
   * `feature/csl492-wallet-delegation-certs`
   * `feature/launcher`
@@ -21,5 +22,5 @@ branch.
 ## Commits
 
 We follow [this guide](http://chris.beams.io/posts/git-commit/) how to write a
-commit message. Also if commit is related to an issue then we add issue name in
-the beggining (i.e. `[CSLD-7] Haddock integration done`).
+commit message. Also if commit is related to an issue then we add the issue name
+at the beggining (i.e. `[CSLD-7] Haddock integration done`).
