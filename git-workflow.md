@@ -13,7 +13,7 @@ branch.
 
 ## Branches
 
-* Branch name should fix the following template: `(type of task)/(maybe related issue number)(name)`.
+* Branch name should fit the following template: `(type of task)/(maybe related issue number)(name)`.
   * `bug/dae31-fix-tx-send`
   * `feature/csl492-wallet-delegation-certs`
   * `feature/launcher`
