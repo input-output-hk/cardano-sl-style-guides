@@ -40,3 +40,24 @@
 We follow [this guide](http://chris.beams.io/posts/git-commit/) how to write a
 commit message. Also if commit is related to an issue then we add the issue name
 at the beggining (i.e. `[CSL-659] Introduce Pos.Communication.Protocol`).
+
+## Versions
+
+Versions are denoted with 3 numbers: A.B.C.
+
+* `A` is major version which changes rarely, when something very
+  significant is changed, it can possibly break API. It may be useful
+  for marketing.
+  * Example: hardfork in `cardano-sl`.
+* `B` changes when new features are added, but they don't break API
+  and are not so important from marketing point of view.
+  * Example: add new endpoints to server.
+* `C` can be changed only because of bugfix or when something minor is
+  added which is not seen by end-users.
+  * Example: fix compilation with old compiler, export `X` from module `Y`.
+
+Versions with `C = 0` are branched out from `master`. Versions with `C > 0`
+(say, `1.2.3`) are branched out from versions with same `A.B` and
+smaller `C` (`1.2.3` s branched out from `1.2.2`).
+
+Tags have names `vA.B.C` (e. g. `v1.2.3`).
