@@ -39,4 +39,4 @@
 
 We follow [this guide](http://chris.beams.io/posts/git-commit/) how to write a
 commit message. Also if commit is related to an issue then we add the issue name
-at the beggining (i.e. `[CSLD-7] Haddock integration done`).
+at the beggining (i.e. `[CSL-659] Introduce Pos.Communication.Protocol`).
