@@ -27,7 +27,8 @@
 * New tagged release (even minor one) is a new branch.
 * If there is a release then a `tag` is created from the commit of this release
   branch.
-* Fixes from release branches are merged into master.
+* We use release branches for GitHub Releases page, please see [one](https://github.com/input-output-hk/cardano-sl/releases) for Cardano SL project.
+* Fixes from release branches are merged into `master`.
 
 ## Branches
 
@@ -73,6 +74,64 @@ Versions with `C = 0` are branched out from `master`. Versions with `C > 0`
 smaller `C` (`1.2.3` s branched out from `1.2.2`).
 
 Tags have names `vA.B.C` (e. g. `v1.2.3`).
+
+### Branches and versions
+
+Name of release branch must be formed as `PROJECT_NAME-RELEASE_VERSION`, 
+where `PROJECT_NAME` is a full project name, and `RELEASE_VERSION` is a full
+release version. For example, `0.2.0` release of `cardano-sl` project
+must live in `cardano-sl-0.2.0` release branch.
+
+Please note that actual version of project is defined by project settings, 
+not by release branch name. So we must keep this correspondence. For example, 
+there's `cardano-sl.cabal` file for Cardano SL project, and this file contains 
+`version` parameter. So when we release `0.2.0` version, we must change value 
+of this parameter to `0.2.0`.
+
+Please keep the value of `version` parameter in the `master` branch actual
+as well.
+
+## CHANGELOG
+
+We use `CHANGELOG.md` file to inform about project changes. Every new 
+release must be described in the corresponding section.
+
+Each section contains 3 subsections:
+
+1. `News` - what new features were added;
+2. `Improvements` - what parts of the project were improved;
+3. `Bug fixes` - what bugs were fixed.
+
+Each subsection contains a list of items. Item can contain high-level info
+(i.e. "Memory consuming was decreased from 10 MB to 8 MB") as well as low-level info
+(i.e. "Bug [CSL-234] fixed"). When we're talking about low-level info with technical
+details, we may refer to GitHub Issues, YouTrack Issues etc.
+
+For example:
+
+```
+CHANGELOG:
+
+0.2.1
+    News:
+        * Feature [CSL-987 Ouroboros protocol commitment changes].
+        * etc.
+    
+    Improvements:
+        * The value of TPS increased from 10 ot 50.
+        * etc.
+
+    Bug fixes:
+        * Bug [CSL-772 Internal error: we have confirmed block version which doesn't satisfy 'canBeAdoptedBV'] fixed.
+        * Bug [773 Thread blocked indefinitely in an STM transaction] fixed.
+        * etc.
+
+0.2.0
+    ...
+```
+
+Please keep the sections in the "from-new-to-old" order: section for the 
+last release is on the top.
 
 # How do we work with issues
 
