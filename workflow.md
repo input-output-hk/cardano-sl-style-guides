@@ -241,3 +241,77 @@ document, this is to be attached as comment.
 All tasks on current sprint are to be assigned an estimation and properly
 transition according to real state
 
+## Release managament
+
+This section describes our release practices.
+
+### Fields in YT
+
+We have a number of special-purpose fields in YT for release management:
+
+* Affected versions (later referred as AV)
+   + For bug reports/testcase failures, should contain a list of versions, for which issue was approved to reproduce.
+* Affected builds (later AB)
+   + For bug reports/testcase failures, should contain a list of builds, for which issue was approved to reproduce.
+* Target versions (later TV)
+   + Version, within which we are to deliver the patch associated with issue.
+
+
+### Version taxonomy
+
+Version `Maj.Min.Fix` of cardano-sl is combined from three components:
+
+* Major version: rarely changed, mostly for marketing
+* Minor version: “big” release, which may include new features
+* Fix version: update to minor version, mostly fixing issues which were discovered by QA
+
+Each minor version corresponds to particular branch, i.e. `cardano-sl-0.2` for version `0.2`.
+Latest minor version `X.Y` may coorespond to `master` if `cardano-sl-X.Y` is not yet created.
+After separate `cardano-sl-X.Y` is created, all commits corresponding to `X.Y` should go there
+(but usage of feature branchs is strogly recommended).
+
+Fix versions are marked with tags, so we will have tags `0.2.0`, `0.2.1` in `cardano-sl-0.2`.
+
+### Task processing
+
+*Open*, *Assigned*, *Postponed*, *To be discussed* task may or may not be assigned a target version. TV here is best guess of developer, when this issue would be delivered.
+*In progress*, *To Verify*, *Waiting for build*, *Waiting for test* tasks must be assigned fix version, at which this task is to be or have been released, e.g. `0.2.1`.
+Tasks in *Done*, *Not fixed* state should also be assigned next minor version, e.g. `0.3.0`.
+
+### Release processing
+
+Following steps should be executed to release version `X = Min.Maj.Fix`:
+
+1. Check issues assigned to version `X` are all in *Wait for build* state
+
+   Issues should be moved to different version iff no commits were pushed to branch corresponding to `X`.
+
+   In case some commits were pushed, some work remained, issue should be split to two (one assigned to next version).
+   Commit revert may also be an option.
+
+2. Extract list of commits from git commit history, i.e. all commits:
+   * From tag of version `Maj.Min.(Fix-1)` if `Fix > 0`.
+   * From tag of version `Maj.(Min - 1).0` if `Fix == 0`.
+
+3. Compare list of issues from Git history and list of issues for version `X`
+
+   To make them conform:
+   * Change version for issues in YT
+   * Revert some commits in branch
+
+4. Trigger build in CI
+
+5. Once CI built successfully:
+   1. Put tag in branch for minor version.
+      If `Fix == 0`, also put tag in branch for major version
+      Tag should always be of format `csl-Maj.Min.Fix`.
+   2. Mark version in YT as released
+   3. Add artifact links from CI to version description
+
+6. Issues from version to be set status *Waiting for test* and assigned to QA team lead.
+
+7. QA team to perform consise testing of version (release note testing or regression testing, depending on case)
+
+8. QA team to approve no blockers discovered (i.e. only minor issues/glitches remain)
+
+9. Release to be published to end user (and delivered by CSL update mechanism)
