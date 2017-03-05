@@ -67,22 +67,23 @@ instead.
 
 ## Versions
 
-Versions are denoted with 3 numbers: A.B.C.
+Versions are denoted with 3 numbers: `Maj.Min.Fix`.
 
-* `A` is major version which changes rarely, when something very
+* `Maj` is major version which changes rarely, when something very
   significant is changed, it can possibly break API. It may be useful
   for marketing.
   * Example: hardfork in `cardano-sl`.
-* `B` changes when new features are added, but they don't break API
+* `Min` is minor version, changes when new features are added,
+  but they don't break API
   and are not so important from marketing point of view.
   * Example: add new endpoints to server.
-* `C` can be changed only because of bugfix or when something minor is
-  added which is not seen by end-users.
+* `Fix` is fix version, can be changed only because of bugfix
+  or when something minor is added, insignificant from end-user perspective.
   * Example: fix compilation with old compiler, export `X` from module `Y`.
 
-Versions with `C = 0` are branched out from `master`. Versions with `C > 0`
-(say, `1.2.3`) are branched out from versions with same `A.B` and
-smaller `C` (`1.2.3` s branched out from `1.2.2`).
+Versions with `Fix = 0` are branched out from `master`. Versions with `Fix > 0`
+(say, `1.2.3`) are branched out from versions with same `Maj.Min` and
+smaller `Fix` (`1.2.3` s branched out from `1.2.2`).
 
 Tags have names `vA.B.C` (e. g. `v1.2.3`).
 
@@ -184,6 +185,11 @@ usecase is when task is blocked by something other. Reason and conditions to
 eventually process task to be provided in comments. Don’t confuse with
 Postponed meta-sprint: task in Postponed state contained in regular sprint is
 one that would be done by say end of sprint after other tasks done.
+* _Waiting for build_: Task is believed to be done by developer and is assigned
+  to be included into upcoming release
+* _Waiting for test_: Task was included into one of releases and waits to be
+  tested by QA team.
+* _Not done_: Task was tested by QA team and required functionality doesn't work.
 * _Done_
 * _Aborted_: Task is aborted. This means that at some point task is no more
 actual. I.e. there is no need to perform this task at this point’s prospective.
@@ -191,6 +197,14 @@ Usually because conditions of task are no more applicable to current state of
 project (i.e. bug is not more reproduced). Reason for task being aborted is
 better be provided in comments.
 * _Duplicate_: Task is already captured within scope of other task.
+
+### State and versions
+
+*Open*, *Assigned*, *Postponed*, *To be discussed* task may or may not be assigned a target version. Target version here is best guess of developer, when this issue would be delivered.
+
+*In progress*, *To Verify*, *Waiting for build*, *Waiting for test* tasks must be assigned fix version, at which this task is to be or have been released, e.g. `0.2.1`.
+
+Tasks in *Done*, *Not fixed* state should also be assigned next minor version, e.g. `0.3.0`.
 
 ## Estimation
 
