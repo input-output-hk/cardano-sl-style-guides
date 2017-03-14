@@ -56,31 +56,34 @@ information.
 
 ## Versions
 
-Versions are denoted with 3 numbers: A.B.C.
+Versions are denoted with 3 numbers: `Maj.Min.Fix`.
 
-* `A` is major version which changes rarely, when something very
+* `Maj` is major version which changes rarely, when something very
   significant is changed, it can possibly break API. It may be useful
   for marketing.
   * Example: hardfork in `cardano-sl`.
-* `B` changes when new features are added, but they don't break API
+* `Min` is minor version, changes when new features are added,
+  but they don't break API
   and are not so important from marketing point of view.
   * Example: add new endpoints to server.
-* `C` can be changed only because of bugfix or when something minor is
-  added which is not seen by end-users.
+* `Fix` is fix version, can be changed only because of bugfix
+  or when something minor is added, insignificant from end-user perspective.
   * Example: fix compilation with old compiler, export `X` from module `Y`.
 
-Versions with `C = 0` are branched out from `master`. Versions with `C > 0`
-(say, `1.2.3`) are branched out from versions with same `A.B` and
-smaller `C` (`1.2.3` s branched out from `1.2.2`).
+Versions with `Fix = 0` are branched out from `master`. Versions with `Fix > 0`
+(say, `1.2.3`) are branched out from versions with same `Maj.Min` and
+smaller `Fix` (`1.2.3` s branched out from `1.2.2`).
 
 Tags have names `vA.B.C` (e. g. `v1.2.3`).
 
 ### Branches and versions
 
-Name of release branch must be formed as `PROJECT_NAME-RELEASE_VERSION`, 
-where `PROJECT_NAME` is a full project name, and `RELEASE_VERSION` is a full
-release version. For example, `0.2.0` release of `cardano-sl` project
-must live in `cardano-sl-0.2.0` release branch.
+Name of release branch must be formed as `PROJECT_NAME-MAJOR_VERSION-MINOR_VERSION`, 
+where `PROJECT_NAME` is a full project name, and `MAJOR_VERSION` and `MINOR_VERSION`
+are major and minor versions respectively.
+For example, `0.2.0` release of `cardano-sl` project
+must live in `cardano-sl-0.2` release branch. Release `0.2.5` as well
+(tags should be set appropriately).
 
 Please note that actual version of project is defined by project settings, 
 not by release branch name. So we must keep this correspondence. For example, 
@@ -173,6 +176,11 @@ usecase is when task is blocked by something other. Reason and conditions to
 eventually process task to be provided in comments. Don’t confuse with
 Postponed meta-sprint: task in Postponed state contained in regular sprint is
 one that would be done by say end of sprint after other tasks done.
+* _Waiting for build_: Task is believed to be done by developer and is assigned
+  to be included into upcoming release
+* _Waiting for test_: Task was included into one of releases and waits to be
+  tested by QA team.
+* _Not done_: Task was tested by QA team and required functionality doesn't work.
 * _Done_
 * _Aborted_: Task is aborted. This means that at some point task is no more
 actual. I.e. there is no need to perform this task at this point’s prospective.
@@ -180,6 +188,14 @@ Usually because conditions of task are no more applicable to current state of
 project (i.e. bug is not more reproduced). Reason for task being aborted is
 better be provided in comments.
 * _Duplicate_: Task is already captured within scope of other task.
+
+### State and versions
+
+*Open*, *Assigned*, *Postponed*, *To be discussed* task may or may not be assigned a target version. Target version here is best guess of developer, when this issue would be delivered.
+
+*In progress*, *To Verify*, *Waiting for build*, *Waiting for test* tasks must be assigned fix version, at which this task is to be or have been released, e.g. `0.2.1`.
+
+Tasks in *Done*, *Not fixed* state should also be assigned next minor version, e.g. `0.3.0`.
 
 ## Estimation
 
@@ -241,3 +257,56 @@ document, this is to be attached as comment.
 All tasks on current sprint are to be assigned an estimation and properly
 transition according to real state
 
+
+
+## Release managament
+
+This section describes our release practices.
+
+### Fields in YT
+
+We have a number of special-purpose fields in YT for release management:
+
+* Affected versions
+   + For bug reports/testcase failures, should contain a list of versions, for which issue was approved to reproduce.
+* Affected builds
+   + For bug reports/testcase failures, should contain a list of builds, for which issue was approved to reproduce.
+* Target versions
+   + Version, within which we are to deliver the patch associated with issue.
+   
+### Release processing
+
+Following steps should be executed to release version `X = Maj.Min.Fix`:
+
+1. Check issues assigned to target version `X` are all in *Wait for build* state
+
+   Issues should be moved to different version if and only if no commits were pushed to branch corresponding to `X`.
+
+   In case some commits were pushed, some work remained, issue should be split to two (one assigned to next version).
+   Commit revert may also be an option.
+
+2. Extract list of commits from git commit history, i.e. all commits:
+   * From tag of version `Maj.Min.(Fix-1)` if `Fix > 0`.
+   * From tag of version `Maj.(Min - 1).0` if `Fix == 0`.
+
+3. Compare list of issues from Git history and list of issues for version `X`
+
+   To make them conform:
+   * Change version for issues in YT
+   * Revert some commits in branch
+
+4. Build project
+
+5. Once project built successfully:
+   1. Put tag in branch for minor version.
+      If `Fix == 0`, also put tag in branch for major version
+   2. Mark version in YT as released
+   3. Add artifact links from CI to version description
+
+6. Issues from version to be set status *Waiting for test* and assigned to QA team lead.
+
+7. QA team to perform consise testing of version (release note testing or regression testing, depending on case)
+
+8. QA team to approve no blockers discovered (i.e. only minor issues/glitches remain)
+
+9. Release to be published to end user
