@@ -54,6 +54,17 @@ project manager would do it himself). Do not merge your own PRs!
 Please describe in PR what have you done, if it is tested or not, any additional
 information.
 
+## Merging Pull requests
+
+After review by another team member, the teammate merging the PR should merge
+`master` into the pull request's branch and then the PR branch into `master`,
+with the `--no-ff` option enabled.
+
+Generally, the pull request's branch should be merged into master , but if is
+clear that rebasing this branch onto master is better (for instance, it is a
+trivial change which doesn't deserve branching) then a rebase can be done
+instead.
+
 ## Versions
 
 Versions are denoted with 3 numbers: `Maj.Min.Fix`.
@@ -78,17 +89,17 @@ Tags have names `vA.B.C` (e. g. `v1.2.3`).
 
 ### Branches and versions
 
-Name of release branch must be formed as `PROJECT_NAME-MAJOR_VERSION-MINOR_VERSION`, 
+Name of release branch must be formed as `PROJECT_NAME-MAJOR_VERSION-MINOR_VERSION`,
 where `PROJECT_NAME` is a full project name, and `MAJOR_VERSION` and `MINOR_VERSION`
 are major and minor versions respectively.
 For example, `0.2.0` release of `cardano-sl` project
 must live in `cardano-sl-0.2` release branch. Release `0.2.5` as well
 (tags should be set appropriately).
 
-Please note that actual version of project is defined by project settings, 
-not by release branch name. So we must keep this correspondence. For example, 
-there's `cardano-sl.cabal` file for Cardano SL project, and this file contains 
-`version` parameter. So when we release `0.2.0` version, we must change value 
+Please note that actual version of project is defined by project settings,
+not by release branch name. So we must keep this correspondence. For example,
+there's `cardano-sl.cabal` file for Cardano SL project, and this file contains
+`version` parameter. So when we release `0.2.0` version, we must change value
 of this parameter to `0.2.0`.
 
 Please keep the value of `version` parameter in the `master` branch actual
@@ -96,7 +107,7 @@ as well.
 
 ## CHANGELOG
 
-We use `CHANGELOG.md` file to inform about project changes. Every new 
+We use `CHANGELOG.md` file to inform about project changes. Every new
 release must be described in the corresponding section.
 
 Each section contains 3 subsections:
@@ -117,23 +128,23 @@ CHANGELOG:
 
 0.2.1
     News:
-        * Feature [CSL-987 Ouroboros protocol commitment changes].
-        * etc.
-    
+	* Feature [CSL-987 Ouroboros protocol commitment changes].
+	* etc.
+
     Improvements:
-        * The value of TPS increased from 10 ot 50.
-        * etc.
+	* The value of TPS increased from 10 ot 50.
+	* etc.
 
     Bug fixes:
-        * Bug [CSL-772 Internal error: we have confirmed block version which doesn't satisfy 'canBeAdoptedBV'] fixed.
-        * Bug [773 Thread blocked indefinitely in an STM transaction] fixed.
-        * etc.
+	* Bug [CSL-772 Internal error: we have confirmed block version which doesn't satisfy 'canBeAdoptedBV'] fixed.
+	* Bug [773 Thread blocked indefinitely in an STM transaction] fixed.
+	* etc.
 
 0.2.0
     ...
 ```
 
-Please keep the sections in the "from-new-to-old" order: section for the 
+Please keep the sections in the "from-new-to-old" order: section for the
 last release is on the top.
 
 # How do we work with issues
@@ -273,7 +284,7 @@ We have a number of special-purpose fields in YT for release management:
    + For bug reports/testcase failures, should contain a list of builds, for which issue was approved to reproduce.
 * Target versions
    + Version, within which we are to deliver the patch associated with issue.
-   
+
 ### Release processing
 
 Following steps should be executed to release version `X = Maj.Min.Fix`:
