@@ -155,13 +155,7 @@ Each task is either assigned to sprint or Unscheduled
 
 * Each sprint corresponds to particular week
 * Each sprint is assigned a sequential number and name (for example _Cardano SL
-#10 Sieglinde_).
-* There are a number of meta-sprints:
-  * _Backlog_: sprint for technical debt to put to
-  * _Postponed_: for issues, which make little sense to be performed at current
-moment and which are to be reviewed and picked up later, when some conditions
-occur (conditions to be described in comments to issue)
-* _Unscheduled_ tasks are kind of Inbox for team
+#10 Sieglinde_)
 
 ## State
 
@@ -219,7 +213,7 @@ To estimate task, developer has to imagine all steps and problems he would
 encounter performing task. Better to provide top edge estimation (for this
 reason multiplying estimation from head by some factor, 1.5 for instance).
 
-Each task assigned to regular sprints or to Backlog meta-sprint should be
+Each task assigned to regular sprints should be
 provided an estimation.
 
 ## Sprint bootstrap
