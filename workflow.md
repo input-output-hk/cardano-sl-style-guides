@@ -1,10 +1,12 @@
-# How do we develop software
+# How we develop software
 
 ## Workflow
 
 ![alt tag](git-flow.png)
 
-* We use `master` branch as a main development branch.  In some
+* This workflow applies to all projects involved into Cardano SL,
+  including libraries, clients, etc.
+* We use `master` branch as the main development branch.  In some
   traditional workflows this branch is called `develop`.  This branch
   is semi-stable.  It means that this branch must compile, tests must
   pass, it shouldn't have stupid errors like you run cardano-sl nodes
@@ -15,95 +17,226 @@
   branch and then it turned out there is a bug which is hard to fix,
   it doesn't mean that someone must fix it ASAP. So please don't
   expect `master` to always work.
-* We also have `stable` branch which contains latest released version
-  which has been thoroughly tested. Even though we test thoroughly
-  before release, sometimes there can be bugs even in `stable`
-  branch because of complexity of our software. Such bugs must be
-  reported and addressed ASAP.
-* Only allowed team-members can push directly to `master`, `stable`
-  and release branches.
+* `master` and release branches are protected. There can't be force
+  pushes and all changes must be done via PR. PR must be approved by
+  someone else and all CI checks must pass. Administrators are allowed
+  to push directly to these branches but only in **exceptional cases
+  when it is strictly necessary**.
 * Features, fixes, refactoring must be done in separate branches.
-  * They are reviewed and merged after that.
-* New tagged release (even minor one) is a new branch.
-* If there is a release then a `tag` is created from the commit of this release
-  branch.
-* We use release branches for GitHub Releases page, please see [one](https://github.com/input-output-hk/cardano-sl/releases) for Cardano SL project.
-* Fixes from release branches are merged into `master`.
+* If there is a release then a `tag` is created from the commit
+  corresponding to this release.
+* We use release branches for GitHub Releases page, please see
+  [one](https://github.com/input-output-hk/cardano-sl/releases) for
+  `cardano-sl` project.
+* Release branches must be merged into `master` every time changes
+  happen there (single commit or a small group of related commits
+  which happened in a short period of time). It's important, because
+  otherwise `master` eventually differs from release branch too much
+  and nobody can merge it. You can pass `-s ours` to `git merge` to
+  discard all changes if it's desirable. Such merges must be done via
+  pull requests too. `master` is never merged into release branch.
+* `cardano-sl` project uses a more complicated workflow with `-mid`
+  and `-rc` branches. `-mid` branches are intended to be used by other
+  projects which depend on `cardano-sl`. `-rc` branch is created
+  prior to release. These branches are protected too. It's described
+  in more detail [below](#special-workflow-for-cardano-sl-project).
+* If a project depends on a concrete version (specified as a commit
+  hash) of another project, this version must be in **protected**
+  branch. It ensures that commit with given hash will not disappear.
 
 ## Branches
 
-* Branch name should fit the following template: `(type of task)/(maybe related
-  issue number)(name)`.
-  * `bugfix/dae31-fix-tx-send`
-  * `feature/csl492-wallet-delegation-certs`
-  * `feature/launcher`
+* Generally branch name should fit the following template:
+  `(nickname)/(maybe related issue number-)(very brief
+  description)`. If nickname is not applicable to a branch (most likely
+  because multiple people works there) it can be skipped. Examples:
+  * `akegalj/dae31-fix-tx-send`
+  * `csl492-wallet-delegation-certs`
+  * `gromak/launcher`
 
 ## Commits
 
-We follow [this guide](http://chris.beams.io/posts/git-commit/) how to write a
-commit message. Also if commit is related to an issue then we add the issue name
-at the beggining (i.e. `[CSL-659] Introduce Pos.Communication.Protocol`).
+We follow [this guide](http://chris.beams.io/posts/git-commit/) how to
+write a commit message. Also if commit is related to an issue then one
+must add the issue identifier at the beggining (e. g. `[CSL-659] Introduce
+Pos.Communication.Protocol`). Issue identifier is not necessary only
+in few cases, specifically:
+* in merge commits;
+* if commit doesn't modify AST of the program;
+* if commit fixes compilation (it usually shouldn't happen because of
+  CI, but life is hard).
+
+In other cases please create an issue for your changes even if they
+are small. That's necessary to track what has been done between
+different versions.
 
 ## Pull requests
 
-When you finish your work in your branch, then you should create a pull request
-to your project. Create a PR to `master` branch (or any other branch if you were
-explicitly asked). Please assign a reviewer (if you don't know a person then
-project manager would do it himself). Do not merge your own PRs!
+When you finish your work in your branch, you should create a pull
+request to your project. Create a PR to `master` branch or another
+appropriate branch. Please assign a reviewer (if you don't know a
+person then project manager would do it himself). You can merge your
+own PR only if it's approved and all mandatory CI checks pass.
 
-Please describe in PR what have you done, if it is tested or not, any additional
-information.
+Please describe in PR what you have done, if it is tested or not, any
+additional information.
+
+You can also create a PR before your work is finished, but in this
+case please add a `wip` label to it.
 
 ## Merging Pull requests
 
-After review by another team member, the teammate merging the PR should merge
-`master` into the pull request's branch and then the PR branch into `master`,
-with the `--no-ff` option enabled.
+After review by another team member, the teammate merging the PR
+should merge `master` into the pull request's branch to resolve
+conflicts and then the PR branch into `master`, with the `--no-ff`
+option enabled. Usually it's enough to just press `Merge` button on
+github, as long as all checks pass and there are no conflicts.
 
-Generally, the pull request's branch should be merged into master , but if is
-clear that rebasing this branch onto master is better (for instance, it is a
-trivial change which doesn't deserve branching) then a rebase can be done
-instead.
+Generally, the pull request's branch should be merged into master,
+but if it is clear that rebasing this branch onto master is better
+(for instance, it is a trivial change which doesn't deserve branching)
+then a rebase can be done instead. Use your judgement.
 
 ## Versions
 
-Versions are denoted with 3 numbers: `Maj.Min.Fix`.
+Versions are denoted with 3 numbers: `Maj.Min.Fix`. General guidelines
+are described below.
 
-* `Maj` is major version which changes rarely, when something very
-  significant is changed, it can possibly break API. It may be useful
-  for marketing.
-  * Example: hardfork in `cardano-sl`.
-* `Min` is minor version, changes when new features are added,
-  but they don't break API
-  and are not so important from marketing point of view.
-  * Example: add new endpoints to server.
-* `Fix` is fix version, can be changed only because of bugfix
-  or when something minor is added, insignificant from end-user perspective.
-  * Example: fix compilation with old compiler, export `X` from module `Y`.
+* `Maj` is major version which changes **rarely**, when something very
+  significant is changed, it can possibly break all kinds of API it
+  provides. It may be useful for marketing. Decision whether to change
+  `Maj` version should be made by competent people.
+  * Example: input endorsers are added to `cardano-sl`.
+* `Min` is minor version, which changes when new features are added as
+  a result of usual development. It can break API. Note that there are
+  multiple different APIs, for example: network messages, library
+  functions, protocol logic, etc. All these APIs can be broken at
+  early stage of project, but after project becomes stable we should
+  try to keep APIs stable too.
+  * Example: add new endpoints to a server.
+* `Fix` is fix version, can be changed only because of bugfix or when
+  something minor is added, insignificant from end-user
+  perspective. The only purpose of it is to maintain existing
+  release. If change is not necessary for this release, then it should
+  go to `master`.
+  * Example: fix compilation with old compiler, export `X` from module
+    `Y`, add logging somewhere to facilitate future debugging.
 
-Versions with `Fix = 0` are branched out from `master`. Versions with `Fix > 0`
-(say, `1.2.3`) are branched out from versions with same `Maj.Min` and
-smaller `Fix` (`1.2.3` s branched out from `1.2.2`).
+Versions with `Fix = 0` are branched out from `master`. Versions with
+`Fix > 0` live in the same branch as versions with same `Maj.Min` and
+smaller `Fix`.
 
 Tags have names `vA.B.C` (e. g. `v1.2.3`).
 
 ### Branches and versions
 
-Name of release branch must be formed as `PROJECT_NAME-MAJOR_VERSION-MINOR_VERSION`,
-where `PROJECT_NAME` is a full project name, and `MAJOR_VERSION` and `MINOR_VERSION`
-are major and minor versions respectively.
-For example, `0.2.0` release of `cardano-sl` project
-must live in `cardano-sl-0.2` release branch. Release `0.2.5` as well
-(tags should be set appropriately).
+Name of release branch must be formed as
+`PROJECT_NAME-MAJOR_VERSION-MINOR_VERSION`, where `PROJECT_NAME` is a
+full project name, and `MAJOR_VERSION` and `MINOR_VERSION` are major
+and minor versions respectively.  For example, `0.2.0` release of
+`cardano-sl` project must live in `cardano-sl-0.2` release
+branch. Release `0.2.5` as well (tags should be set appropriately).
 
-Please note that actual version of project is defined by project settings,
-not by release branch name. So we must keep this correspondence. For example,
-there's `cardano-sl.cabal` file for Cardano SL project, and this file contains
-`version` parameter. So when we release `0.2.0` version, we must change value
-of this parameter to `0.2.0`.
+Please note that actual version of project is defined by project
+settings, not by release branch name. So we must keep this
+correspondence. For example, there's `cardano-sl.cabal` file for
+Cardano SL project, and this file contains `version` parameter. So
+when we release `0.2.0` version, we must change value of this
+parameter to `0.2.0`. If project consists of multiple packages which
+conceptually form the same package, all of them should have the same
+version.
 
 Please keep the value of `version` parameter in the `master` branch actual
-as well.
+as well (corresponding to the latest release).
+
+### Special workflow for cardano-sl project
+
+Table below illustrates a special workflow used for cardano-sl project
+with respect to branches and deployment clusters.
+
+| Branch             | Deployment  | Purpose                                        |
+| -----------------  | ----------- | ---------------------------------------------- |
+| master             | csl-testing | Testing current master (by devs)               |
+| cardano-sl-X.Y-rc  | csl-qa      | QA testing of public release candidate (qanet) |
+| cardano-sl-X.Y     | csl-testnet | Public release (testnet)                       |
+| cardano-sl-X.Y-mid | ——————————— | Used by other projects (e. g. explorer)        |
+
+Flow should be following:
+1. When version is being wrapped up, `master` should be deployed to
+   `csl-testing` cluster, problems arising right away should be
+   resolved.
+2. After successful deployment on `csl-testing`:
+    * `vX.Y.0` tag should be set (in `master`);
+    * `cardano-sl-X.Y-rc` should be branched out of `master`;
+    * `cardano-sl-X.Y-rc` should be deployed on `csl-qa` cluster;
+    * all bugs discovered should be fixed in `-rc` branch, `Fix` version
+	is increased for each fix.
+3. After `X.Y` version is polished and is ready to be published (it's
+`vX.Y.Z` already):
+    * `cardano-sl-X.Y-rc` should be renamed to `cardano-sl-X.Y`;
+    * `cardano-sl-X.Y-mid` is created and points to the same commit as
+      `cardano-sl-X.Y`;
+    * all projects depending on the `cardano-sl-X.{Y-1}-mid` branch
+      should start migration to the new `-mid` branch or
+      `cardano-sl-X.{Y-1}`;
+    * configuration files (e. g. compile-time constants) should be
+      changed;
+    * `vX.Y.Z` should be deployed on `csl-testnet` cluster;
+    * tada.iohk.io, daedaluswallet.io should be updated;
+    * after all projects migrate from `cardano-sl-X.{Y-1}-mid` this
+      branch should be removed.
+
+Rules for `-rc` branch are same as for release branch, specifically:
+* `-rc` branch must be merged into `master` after every change;
+* `master` is never merged into `-rc` branch;
+* `-rc` branch must be protected.
+
+### Interaction between cardano-sl and projects dependent on it
+
+Some projects (e. g. `cardano-sl-explorer`, `daedalus`) depend on
+`cardano-sl`. There may be more such projects in future. In order to
+facilitate interaction with `cardano-sl` we use special branch `-mid`
+mentioned above. Let's call project which depends on `cardano-sl`
+ProjectX (it may be explorer or daedalus).
+
+* ProjectX must depend only on version of `cardano-sl` from release
+  branch or `-mid` branch, not `-rc` branch. This rule is imposed
+  because only these branches are generally stable and
+  well-tested. `-rc` branch corresponds to a version which is not
+  properly tested yet, hence ProjectX should not depend on it.
+* ProjectX should always be launched with the same version of
+  `cardano-sl` as the version it depends on (on the code
+  level). That's because different versions of `cardano-sl` may be
+  incompatible in some way and it may lead to different (inconsistent)
+  behavior of `cardano-node` and `cardano-explorer`.
+* ProjectX may use whatever version of `cardano-sl` it needs to
+  use. However, it's encouraged to provide an easy way to see which
+  version of `cardano-sl` is used in given version of ProjectX.
+* If ProjectX developer wants to change something in `cardano-sl`
+  version `X.Y.Z` (which is used by some version of ProjectX, say
+  `A.B.C`) they should make a PR to `cardano-sl-X.Y` branch, wait
+  until it's merged and then use newer version in ProjectX (version
+  `A.B.C`).
+* `master` branch of ProjectX usually should depend on the latest
+  `cardano-sl-X.Y-mid` branch of `cardano-sl`. Exceptions: migration
+  period when new version has been just released (in this case
+  `cardano-sl-X.{Y-1}-mid` can be used); situations when `cardano-sl`
+  contains something new that is not ready for integration into
+  ProjectX (in this case older release of `cardano-sl` can be used).
+* If ProjectX developer wants to change something in `cardano-sl` for
+  ProjectX's `master` they should make a PR to the latest
+  `cardano-sl-X.Y-mid` of `cardano-sl`.
+* Latest release of `cardano-sl` (branch `cardano-sl-X.Y`) should be
+  frequently merged into `cardano-sl-mid`.
+* `cardano-sl-X.Y-mid` should be frequently merged to `master`.
+
+Notice that usually there will be only one `cardano-sl-X.Y-mid` branch
+in `cardano-sl`. However, right after new version of `cardano-sl` is
+released there will be some migration period during which `master` of
+ProjectX will depend on old version of `-mid` and there will be work
+in progress to start using newver version. So sometimes we need more
+than one `-mid` branch and for this reason we put version into its
+name.
 
 ## CHANGELOG
 
@@ -147,7 +280,7 @@ CHANGELOG:
 Please keep the sections in the "from-new-to-old" order: section for the
 last release is on the top.
 
-# How do we work with issues
+# How we work with issues
 
 ## Sprints
 
