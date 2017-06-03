@@ -154,12 +154,12 @@ as well (corresponding to the latest release).
 Table below illustrates a special workflow used for cardano-sl project
 with respect to branches and deployment clusters.
 
-| Branch            | Deployment  | Purpose                                        |
-| ----------------- | ----------- | ---------------------------------------------- |
-| master            | csl-testing | Testing current master (by devs)               |
-| cardano-sl-X.Y-rc | csl-qa      | QA testing of public release candidate (qanet) |
-| cardano-sl-X.Y    | csl-testnet | Public release (testnet)                       |
-| cardano-sl-mid    | ——————————— | Used by other projects (e. g. explorer)        |
+| Branch             | Deployment  | Purpose                                        |
+| -----------------  | ----------- | ---------------------------------------------- |
+| master             | csl-testing | Testing current master (by devs)               |
+| cardano-sl-X.Y-rc  | csl-qa      | QA testing of public release candidate (qanet) |
+| cardano-sl-X.Y     | csl-testnet | Public release (testnet)                       |
+| cardano-sl-X.Y-mid | ——————————— | Used by other projects (e. g. explorer)        |
 
 Flow should be following:
 1. When version is being wrapped up, `master` should be deployed to
@@ -174,17 +174,17 @@ Flow should be following:
 3. After `X.Y` version is polished and is ready to be published (it's
 `vX.Y.Z` already):
     * `cardano-sl-X.Y-rc` should be renamed to `cardano-sl-X.Y`;
-    * `cardano-sl-mid-old` is created from the same commit as current
-      `cardano-sl-mid` (commit identifier doesn't change), all
-      projects depending on the `-mid` branch are encouraged to start
-      depending on the new `-mid` branch or `cardano-sl-X.{Y-1}`;
-    * `cardano-sl-mid` should point to the same commit as
+    * `cardano-sl-X.Y-mid` is created and points to the same commit as
       `cardano-sl-X.Y`;
-    * configuration files (e. g. compile-time constants) should be changed;
+    * all projects depending on the `cardano-sl-X.{Y-1}-mid` branch
+      should start migration to the new `-mid` branch or
+      `cardano-sl-X.{Y-1}`;
+    * configuration files (e. g. compile-time constants) should be
+      changed;
     * `vX.Y.Z` should be deployed on `csl-testnet` cluster;
     * tada.iohk.io, daedaluswallet.io should be updated;
-    * after all projects migrate from `cardano-sl-mid-old` to
-      `cardano-sl-mid` old branch should be removed.
+    * after all projects migrate from `cardano-sl-X.{Y-1}-mid` this
+      branch should be removed.
 
 Rules for `-rc` branch are same as for release branch, specifically:
 * `-rc` branch must be merged into `master` after every change;
@@ -209,7 +209,7 @@ ProjectX (it may be explorer or daedalus).
   level). That's because different versions of `cardano-sl` may be
   incompatible in some way and it may lead to different (inconsistent)
   behavior of `cardano-node` and `cardano-explorer`.
-* ProjectX may use whatver version of `cardano-sl` it needs to
+* ProjectX may use whatever version of `cardano-sl` it needs to
   use. However, it's encouraged to provide an easy way to see which
   version of `cardano-sl` is used in given version of ProjectX.
 * If ProjectX developer wants to change something in `cardano-sl`
@@ -217,18 +217,26 @@ ProjectX (it may be explorer or daedalus).
   `A.B.C`) they should make a PR to `cardano-sl-X.Y` branch, wait
   until it's merged and then use newer version in ProjectX (version
   `A.B.C`).
-* `master` branch of ProjectX usually should depend on
-  `cardano-sl-mid` branch of `cardano-sl`. Exceptions: migration
+* `master` branch of ProjectX usually should depend on the latest
+  `cardano-sl-X.Y-mid` branch of `cardano-sl`. Exceptions: migration
   period when new version has been just released (in this case
-  `cardano-sl-mid-old` can be used), situations when `cardano-sl`
+  `cardano-sl-X.{Y-1}-mid` can be used); situations when `cardano-sl`
   contains something new that is not ready for integration into
-  ProjectX (in this case `cardano-sl-X.Y` can be used).
+  ProjectX (in this case older release of `cardano-sl` can be used).
 * If ProjectX developer wants to change something in `cardano-sl` for
-  ProjectX's `master` they should make a PR to `cardano-sl-mid` of
-  `cardano-sl`.
+  ProjectX's `master` they should make a PR to the latest
+  `cardano-sl-X.Y-mid` of `cardano-sl`.
 * Latest release of `cardano-sl` (branch `cardano-sl-X.Y`) should be
   frequently merged into `cardano-sl-mid`.
-* `cardano-sl-mid` should be frequently merged to `master`.
+* `cardano-sl-X.Y-mid` should be frequently merged to `master`.
+
+Notice that usually there will be only one `cardano-sl-X.Y-mid` branch
+in `cardano-sl`. However, right after new version of `cardano-sl` is
+released there will be some migration period during which `master` of
+ProjectX will depend on old version of `-mid` and there will be work
+in progress to start using newver version. So sometimes we need more
+than one `-mid` branch and for this reason we put version into its
+name.
 
 ## CHANGELOG
 
