@@ -17,6 +17,15 @@
   this branch and then it turned out there is a bug which is hard to
   fix, it doesn't mean that someone must fix it ASAP. So please don't
   expect `master` to always work.
+* CI builds should be green across the platforms for PR to get merged
+  into `master`. Sometimes, however, one wants to hand off an
+  implemented feature with a reasonable trust in its correctness. In
+  such case it should be announced that the work on the issue is
+  finished, a PR created (but not merged). If that is done, other teams
+  who were blocked by this issue can start working on their tasks that
+  depend on this one. It's possible to spin up a testing cluster for a
+  particular commit hash. It is expected that testing clusters will be
+  span up in cases when such dangling PRs are created.
 * `master` and release branches are protected. There can't be force
   pushes and all changes must be done via PR. PR must be approved by
   someone else and all CI checks must pass. Administrators are allowed
