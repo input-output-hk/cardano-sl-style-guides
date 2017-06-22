@@ -4,18 +4,18 @@
 
 ![alt tag](git-flow.png)
 
-* This workflow applies to all projects involved into Cardano SL,
+* This workflow applies to all projects connected to Cardano SL,
   including libraries, clients, etc.
-* We use `master` branch as the main development branch.  In some
-  traditional workflows this branch is called `develop`.  This branch
-  is semi-stable.  It means that this branch must compile, tests must
-  pass, it shouldn't have stupid errors like you run cardano-sl nodes
-  and see `notImplemented` errors.  If something like this happens,
-  someone must fix it ASAP.  At the same time, it is legal to have
-  some bugs in this branch which are really hard to fix. Of course we
-  should try to avoid it, but if someone pushed something to this
-  branch and then it turned out there is a bug which is hard to fix,
-  it doesn't mean that someone must fix it ASAP. So please don't
+* We use `master` branch as the main development branch. In some
+  traditional workflows this branch is called `develop`. This branch is
+  semi-stable.  It means that this branch must compile, tests must pass,
+  it shouldn't have trivial errors or incomplete features. For instance,
+  running cardano-sl nodes shouldn't yield `notImplemented` errors. If
+  stability of `master` is jeopardized, a hot-fix must be pushed.  At
+  the same time, it is allowed to have known bugs in this branch.  Of
+  course we should try to avoid it, but if someone pushed something to
+  this branch and then it turned out there is a bug which is hard to
+  fix, it doesn't mean that someone must fix it ASAP. So please don't
   expect `master` to always work.
 * `master` and release branches are protected. There can't be force
   pushes and all changes must be done via PR. PR must be approved by
@@ -23,18 +23,19 @@
   to push directly to these branches but only in **exceptional cases
   when it is strictly necessary**.
 * Features, fixes, refactoring must be done in separate branches.
-* If there is a release then a `tag` is created from the commit
+* If there is a release, a `tag` is created from the commit
   corresponding to this release.
 * We use release branches for GitHub Releases page, please see
   [one](https://github.com/input-output-hk/cardano-sl/releases) for
   `cardano-sl` project.
 * Release branches must be merged into `master` every time changes
-  happen there (single commit or a small group of related commits
-  which happened in a short period of time). It's important, because
-  otherwise `master` eventually differs from release branch too much
-  and nobody can merge it. You can pass `-s ours` to `git merge` to
-  discard all changes if it's desirable. Such merges must be done via
-  pull requests too. `master` is never merged into release branch.
+  happen in the former (single commit or a small group of related
+  commits which happened in a short period of time). It's important,
+  because otherwise `master` will eventually differ from release branch
+  too much and nobody will be able to merge it. You can pass `-s ours`
+  to `git merge` to discard all changes if it's desirable. Such merges
+  must be done via pull requests too. `master` is never merged into
+  release branch.
 * `cardano-sl` project uses a more complicated workflow with `-mid`
   and `-rc` branches. `-mid` branches are intended to be used by other
   projects which depend on `cardano-sl`. `-rc` branch is created
@@ -329,11 +330,16 @@ better be provided in comments.
 
 ### State and versions
 
-*Open*, *Assigned*, *Postponed*, *To be discussed* task may or may not be assigned a target version. Target version here is best guess of developer, when this issue would be delivered.
+*Open*, *Assigned*, *Postponed*, *To be discussed* task may or may not
+be assigned a target version. Target version here is best guess of
+developer, when this issue would be delivered.
 
-*In progress*, *To Verify*, *Waiting for build*, *Waiting for test* tasks must be assigned fix version, at which this task is to be or have been released, e.g. `0.2.1`.
+*In progress*, *To Verify*, *Waiting for build*, *Waiting for test*
+tasks must be assigned fix version, at which this task is to be or have
+been released, e.g. `0.2.1`.
 
-Tasks in *Done*, *Not fixed* state should also be assigned next minor version, e.g. `0.3.0`.
+Tasks in *Done*, *Not fixed* state should also be assigned next minor
+version, e.g. `0.3.0`.
 
 ## Estimation
 
