@@ -255,9 +255,8 @@ release must be described in the corresponding section.
 
 Each section contains 3 subsections:
 
-1. `News` - what new features were added;
-2. `Improvements` - what parts of the project were improved;
-3. `Bug fixes` - what bugs were fixed.
+1. `Improvements` - what parts of the project were improved;
+2. `Bug fixes` - what bugs were fixed.
 
 Each subsection contains a list of items. Item can contain high-level info
 (i.e. "Memory consuming was decreased from 10 MB to 8 MB") as well as low-level info
@@ -270,10 +269,6 @@ For example:
 CHANGELOG:
 
 0.2.1
-    News:
-	* Feature [CSL-987 Ouroboros protocol commitment changes].
-	* etc.
-
     Improvements:
 	* The value of TPS increased from 10 ot 50.
 	* etc.
