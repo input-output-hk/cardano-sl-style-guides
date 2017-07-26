@@ -107,6 +107,27 @@ but if it is clear that rebasing this branch onto master is better
 (for instance, it is a trivial change which doesn't deserve branching)
 then a rebase can be done instead. Use your judgement.
 
+First of all, please realize that *you* are the main person responsible for making sure these changes go to `master`. Don't expect that some volunteer will investigate history of changes in release/rc branch and will merge your changes for you or will find a more appropriate person to do it. Don't close the issue until all your commits are merged to `master`.
+
+Second, the idea is that all commits (identified by their hashes, not by their contents), which are in release/rc branch must be predecessors of `master`. Even if some commits affect non-existing code, they must be merged (if you want to discard changes, you can pass `-s ours` to `git merge`).
+
+The algorithm is:
+1. You can try to create a PR from release/rc branch to `master`. If it doesn't have conflicts and CI passes, you are lucky and it can be merged directly.
+2. If you are not so lucky, do the following:
+```git checkout master
+git pull --ff-only # make sure you are using latest master
+git checkout -b NICKNAME/merge-BRANCHNAME-to-master # you can choose whatever name you want actually
+git merge AAAAA # where AAAAA is the merge commit corresponding to your PR
+# resolve conflicts
+git commit
+git push -u origin NICKNAME/merge-BRANCHNAME-to-master
+# make a PR
+```
+3. If there are conflicts not related to your PR, there are three possibilities:
+3.1. If you can resolve these conflicts relatively easily and quickly, please do it, you will save your time and your colleagues' time.
+3.2. If these conflicts appear because there are other changes between the last time release/rc branch was merged to `master` and your PR, then find a person who made those changes and ask him to merge their changes first. After they finish, go back to step (2). If there are many changes from multiple people, then talk to the author of the earliest changes, it's his turn.
+3.3. If these conflicts appear because of changes in master, it's the most complicated situation. Either try to find appropriate person to ask for help from git history or just ask someone you think is the most familiar with that codebase.
+
 ## Versions
 
 Versions are denoted with 3 numbers: `Maj.Min.Fix`. General guidelines
