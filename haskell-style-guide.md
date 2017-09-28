@@ -236,7 +236,7 @@ module Data.Set
 Some clarifications:
 
 1. Use 7 spaces indentation for export list (so that bracket is below
-   the first letter in module name).
+   the first letter in module name). Using 4 spaces (classic indentation) is also allowed.
 2. You can split export list into sections or just write all as single section.
 3. It is strongly adviced to sort each section alpabetically. However,
    classes, data types and type aliases should be written before
