@@ -445,6 +445,8 @@ We have a number of special-purpose fields in YT for release management:
 
 ### Release processing
 
+#### Release preparation
+
 Following steps should be executed to release version `X = Maj.Min.Fix`:
 
 1. Check issues assigned to target version `X` are all in *Wait for build* state
@@ -474,8 +476,26 @@ Following steps should be executed to release version `X = Maj.Min.Fix`:
 
 6. Issues from version to be set status *Waiting for test* and assigned to QA team lead.
 
-7. QA team to perform consise testing of version (release note testing or regression testing, depending on case)
+7. If minor version wasn't yet published to end users, version to be deployed on QAnet cluster
+   and QA team to perform testing there
 
-8. QA team to approve no blockers discovered (i.e. only minor issues/glitches remain)
+#### Release deploy & publishing
 
-9. Release to be published to end user
+If minor version is to be initially published to end user or is published already, but fix was prepared and to be delivered to end users, following steps should be executed.
+
+1. Prepare installers to test
+  a. If version contains changes needed to be deployed on testnet cluster
+      1) Testnet cluster should be cloned (with databases, same keys) and version should be deployed on clone
+      2) Installers should be prepared to work with this clone
+  b. If version contains no changes which require redeploy, installers just to be rebuild to use testnet cluster
+
+2. QA team to perform consise testing of version (release note testing or regression testing, depending on case)
+
+3. QA team to approve no blockers discovered (i.e. only minor issues/glitches remain)
+
+4. In case redeploy of testnet is needed
+    a. Redeploy should be performed
+    b. Installers for testnet rebuild
+    c. QA team should confirm installers work well on testnet
+
+5. Release to be published to end user
